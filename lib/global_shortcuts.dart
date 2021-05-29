@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class GlobalShortcuts {
-  static const MethodChannel _channel = const MethodChannel('global_shortcuts');
+  static const _channel = MethodChannel('global_shortcuts');
 
   /// Registers a global shortcut listener
   ///
@@ -14,7 +14,7 @@ class GlobalShortcuts {
       (methodCall) => _handler(methodCall, onKeyDown),
     );
 
-    final bool? success = await _channel.invokeMethod('register');
+    final success = await _channel.invokeMethod('register') as bool?;
     return success;
   }
 
