@@ -1,8 +1,9 @@
 // import 'package:flutter/services.dart';
-// import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 // import 'package:global_shortcuts/global_shortcuts.dart';
 
 void main() {
+  test('fake', () => expect(1 + 1, 2));
 //   const MethodChannel channel = MethodChannel('global_shortcuts');
 
 //   TestWidgetsFlutterBinding.ensureInitialized();
