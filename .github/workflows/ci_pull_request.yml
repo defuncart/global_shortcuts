@@ -1,6 +1,5 @@
 name: ci_pull_request
-# on: pull_request
-on: push
+on: pull_request
 jobs:
   lint-unit-test:
     name: Lint + Unit Tests
@@ -22,8 +21,8 @@ jobs:
       - name: Unit tests
         run:
           flutter test
-  build-macOS:
-    name: Build macOS
+  build-example-macOS:
+    name: Build Example macOS
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v1
@@ -36,7 +35,7 @@ jobs:
       - name: Enable macOS Support
         run:
           flutter config --enable-macos-desktop
-      - name: Build app
+      - name: Build example
         run: |
           cd example
           flutter build macos --release
