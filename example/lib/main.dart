@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
           ) ??
           false;
     } on Exception catch (e) {
-      print('An exception occured while trying to register');
+      print('An exception occurred while trying to register');
       print(e);
       success = false;
     }
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     try {
       await GlobalShortcuts.unregister();
     } on Exception catch (e) {
-      print('An exception occured while trying to unregister');
+      print('An exception occurred while trying to unregister');
       print(e);
     }
 
