@@ -1,26 +1,43 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show VoidCallback;
 import 'package:flutter/services.dart';
 
+import 'src/enums/shortcut_key.dart';
+import 'src/enums/shortcut_modifier.dart';
+
+export 'src/enums/shortcut_key.dart';
+export 'src/enums/shortcut_modifier.dart';
+
 class GlobalShortcuts {
-  static const _channel = MethodChannel('global_shortcuts');
+  static const  _channel =  MethodChannel('global_shortcuts');
 
   /// Registers a global shortcut listener
   ///
-  /// On CRTL+SPACE [onKeyDown] will be invoked
-  static Future<bool?> register(VoidCallback onKeyDown) async {
+  /// When [key] and [modifiers] are pressed, [onKeyCombo] will be invoked
+  static Future<bool?> register({
+    required ShortcutKey key,
+    required List<ShortcutModifier> modifiers,
+    required VoidCallback onKeyCombo,
+  }) async {
     _channel.setMethodCallHandler(
-      (methodCall) => _handler(methodCall, onKeyDown),
+      (methodCall) => _handler(methodCall, onKeyCombo),
     );
 
-    final success = await _channel.invokeMethod('register') as bool?;
-    return success;
+    final result = await _channel.invokeMethod(
+      'register',
+      <String, dynamic>{
+        'key': key.asString,
+        'modifiers': modifiers.map((modifier) => modifier.asString).toList(growable: false)
+      },
+    );
+
+    return result;
   }
 
   static Future<dynamic> _handler(MethodCall methodCall, VoidCallback onKeyDown) async {
     switch (methodCall.method) {
-      case 'onKeyDown':
+      case 'onKeyCombo':
         onKeyDown();
         break;
       default:
