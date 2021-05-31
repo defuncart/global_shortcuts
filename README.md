@@ -47,6 +47,7 @@ Only one shortcut combo can be registered. If, for instance, CTRL+SPACE is regis
 
 * Presently the plugin only supports macOS. Windows support may be investigated, linux support is unlikely.
 * macOS plugin uses [HotKey](https://github.com/soffes/HotKey/) which does not seem to support all modifiers (i.e fn) while os global shortcuts like CMD+SPACE do not seem to be caught.
+* Due to 0.0.x versioning, package is presently experimental.
 
 ## Collaboration
 
