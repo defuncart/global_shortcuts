@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:global_shortcuts/global_shortcuts.dart';
 
 void main() {
@@ -14,6 +13,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var _key = ShortcutKey.space;
+  var _modifiers = [ShortcutModifier.control];
   var _isRegistered = false;
   var _outputString = '';
 
@@ -21,9 +22,15 @@ class _MyAppState extends State<MyApp> {
     late bool success;
 
     try {
-      success = await GlobalShortcuts.register(_onKeyDown) ?? false;
-    } on PlatformException {
-      print('An exception occured while trying to register');
+      success = await GlobalShortcuts.register(
+            key: _key,
+            modifiers: _modifiers,
+            onKeyCombo: _onKeyCombo,
+          ) ??
+          false;
+    } on Exception catch (e) {
+      print('An exception occurred while trying to register');
+      print(e);
       success = false;
     }
 
@@ -37,8 +44,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> _unregister() async {
     try {
       await GlobalShortcuts.unregister();
-    } on PlatformException {
-      print('An exception occured while trying to unregister');
+    } on Exception catch (e) {
+      print('An exception occurred while trying to unregister');
+      print(e);
     }
 
     if (mounted) {
@@ -49,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _onKeyDown() {
+  void _onKeyCombo() {
     if (mounted) {
       setState(() => _outputString = 'Shortcut Pressed at ${DateTime.now()}');
     }
@@ -66,7 +74,47 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('Listens for CTRL+SPACE shortcut'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DropdownButton<ShortcutModifier>(
+                    items: [
+                      for (final modifier in ShortcutModifier.values)
+                        DropdownMenuItem(
+                          value: modifier,
+                          child: Text(modifier.asString),
+                        ),
+                    ],
+                    value: _modifiers.first,
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        if (_isRegistered) {
+                          _unregister();
+                        }
+                        setState(() => _modifiers = [newValue]);
+                      }
+                    },
+                  ),
+                  DropdownButton<ShortcutKey>(
+                    items: [
+                      for (final key in ShortcutKey.values)
+                        DropdownMenuItem(
+                          value: key,
+                          child: Text(key.asString),
+                        ),
+                    ],
+                    value: _key,
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        if (_isRegistered) {
+                          _unregister();
+                        }
+                        setState(() => _key = newValue);
+                      }
+                    },
+                  ),
+                ],
+              ),
               if (!_isRegistered)
                 ElevatedButton(
                   onPressed: () async => _register(),

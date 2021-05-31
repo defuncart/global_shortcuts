@@ -14,8 +14,7 @@ public class GlobalShortcutsPlugin: NSObject, FlutterPlugin {
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
     case "register":
-      register(self)
-      result(true)
+      register(call, result: result)
     case "unregister":
       unregister(self)
       result(nil)
@@ -24,12 +23,21 @@ public class GlobalShortcutsPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  func register(_: Any?) {
-    // TODO: hardcoded
-    hotKey = HotKey(keyCombo: KeyCombo(key: .space, modifiers: [.control]))
+  private func register(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    if let args = call.arguments as? [String: Any],
+      let keyAsString = args["key"] as? String,
+      let key = Key(string: keyAsString),
+      let modifiersAsString = args["modifiers"] as? [String],
+      let modifiers = parseModifiers(modifiersAsString)
+    {
+      hotKey = HotKey(keyCombo: KeyCombo(key: key, modifiers: modifiers))
+      result(true)
+    } else {
+      result(FlutterError(code: "Invalid argument(s)", message: nil, details: nil))
+    }
   }
 
-  func unregister(_: Any?) {
+  private func unregister(_: Any?) {
     hotKey = nil
   }
 
@@ -42,8 +50,44 @@ public class GlobalShortcutsPlugin: NSObject, FlutterPlugin {
 
       // Registered
       hotKey.keyDownHandler = {
-        GlobalShortcutsPlugin.channel.invokeMethod("onKeyDown", arguments: nil, result: nil)
+        GlobalShortcutsPlugin.channel.invokeMethod("onKeyCombo", arguments: nil, result: nil)
       }
+    }
+  }
+
+  private func parseModifiers(_ modifiersAsString: [String]) -> NSEvent.ModifierFlags? {
+    var modifiers: NSEvent.ModifierFlags = []
+    for modifierAsString in modifiersAsString {
+      if let modifier = stringToModifier(modifierAsString) {
+        modifiers.insert(modifier)
+      } else {
+        return nil
+      }
+    }
+
+    return modifiers
+  }
+
+  private func stringToModifier(_ s: String) -> NSEvent.ModifierFlags? {
+    switch s {
+    case "capsLock":
+      return NSEvent.ModifierFlags.capsLock
+    case "shift":
+      return NSEvent.ModifierFlags.shift
+    case "control":
+      return NSEvent.ModifierFlags.control
+    case "option":
+      return NSEvent.ModifierFlags.option
+    case "command":
+      return NSEvent.ModifierFlags.command
+    case "numericPad":
+      return NSEvent.ModifierFlags.numericPad
+    case "help":
+      return NSEvent.ModifierFlags.help
+    case "function":
+      return NSEvent.ModifierFlags.function
+    default:
+      return nil
     }
   }
 }
