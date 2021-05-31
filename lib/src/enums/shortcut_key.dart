@@ -137,5 +137,6 @@ enum ShortcutKey {
 }
 
 extension ShortcutKeyExtensions on ShortcutKey {
-  String get asString => this == ShortcutKey.returnKey ? 'return' : describeEnum(this);
+  String get asString =>
+      this == ShortcutKey.returnKey ? 'return' : describeEnum(this);
 }

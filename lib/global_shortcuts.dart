@@ -10,7 +10,7 @@ export 'src/enums/shortcut_key.dart';
 export 'src/enums/shortcut_modifier.dart';
 
 class GlobalShortcuts {
-  static const  _channel =  MethodChannel('global_shortcuts');
+  static const _channel = MethodChannel('global_shortcuts');
 
   /// Registers a global shortcut listener
   ///
@@ -28,14 +28,17 @@ class GlobalShortcuts {
       'register',
       <String, dynamic>{
         'key': key.asString,
-        'modifiers': modifiers.map((modifier) => modifier.asString).toList(growable: false)
+        'modifiers': modifiers
+            .map((modifier) => modifier.asString)
+            .toList(growable: false)
       },
     );
 
     return result;
   }
 
-  static Future<dynamic> _handler(MethodCall methodCall, VoidCallback onKeyDown) async {
+  static Future<dynamic> _handler(
+      MethodCall methodCall, VoidCallback onKeyDown) async {
     switch (methodCall.method) {
       case 'onKeyCombo':
         onKeyDown();
@@ -46,5 +49,6 @@ class GlobalShortcuts {
   }
 
   /// Unregisters the global shortcut listener
-  static Future<void> unregister() async => await _channel.invokeMethod('unregister');
+  static Future<void> unregister() async =>
+      await _channel.invokeMethod('unregister');
 }

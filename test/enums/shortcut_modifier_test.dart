@@ -5,7 +5,9 @@ import 'package:global_shortcuts/global_shortcuts.dart';
 void main() {
   group('ShortcutModifierExtensions', () {
     group('asString', () {
-      final expected = ShortcutModifier.values.map((key) => describeEnum(key)).toList(growable: false);
+      final expected = ShortcutModifier.values
+          .map((key) => describeEnum(key))
+          .toList(growable: false);
 
       test('Expect correct values', () {
         for (var i = 0; i < ShortcutModifier.values.length; i++) {

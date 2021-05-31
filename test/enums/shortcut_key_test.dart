@@ -6,7 +6,8 @@ void main() {
   group('ShortcutKeyExtensions', () {
     group('asString', () {
       final expected = ShortcutKey.values
-          .map((key) => key == ShortcutKey.returnKey ? 'return' : describeEnum(key))
+          .map((key) =>
+              key == ShortcutKey.returnKey ? 'return' : describeEnum(key))
           .toList(growable: false);
 
       test('Expect correct values', () {
