@@ -8,9 +8,7 @@ As the shortcut is global, the callback will be triggered even when the app does
 
 ```yaml
 dependencies:
-  global_shortcuts:
-    git:
-      url: https://github.com/defuncart/global_shortcuts/
+  global_shortcuts: any
 ```
 
 ## Usage

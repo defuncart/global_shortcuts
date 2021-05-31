@@ -1,6 +1,6 @@
 name: global_shortcuts
 description: A macOS plugin which can register a callback for a global keyboard shortcut.
-version: 0.0.1
+version: 0.0.1+1
 homepage: https://github.com/defuncart/global_shortcuts/
 
 environment:
